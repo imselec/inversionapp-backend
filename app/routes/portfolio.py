@@ -6,5 +6,10 @@ router = APIRouter(
 )
 
 @router.get("/snapshot")
-def snapshot():
-    return {"message": "portfolio snapshot placeholder"}
+def portfolio_snapshot():
+    # Aquí puedes devolver datos reales de tu CSV o servicio
+    return {"message": "snapshot data"}
+
+@router.get("/time-series")
+def portfolio_time_series():
+    return {"message": "time series data"}
