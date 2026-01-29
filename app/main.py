@@ -1,15 +1,28 @@
 from fastapi import FastAPI
 
-from app.routes.system import router as system_router
-from app.routes.portfolio import router as portfolio_router
-from app.routes.recommendations import router as recommendations_router
-from app.routes.alerts import router as alerts_router
-from app.routes.history import router as history_router
+# Routers
+from app.routes import portfolio
+from app.routes import recommendations
+from app.routes import recommendation_candidates
+from app.routes import system
 
-app = FastAPI(title="InversionAPP API")
+# Crear la app ANTES de usarla
+app = FastAPI(
+    title="InversionAPP Backend",
+    version="1.0.0"
+)
 
-app.include_router(system_router)
-app.include_router(portfolio_router)
-app.include_router(recommendations_router)
-app.include_router(alerts_router)
-app.include_router(history_router)
+# Registrar routers
+app.include_router(portfolio.router)
+app.include_router(recommendations.router)
+app.include_router(recommendation_candidates.router)
+app.include_router(system.router)
+
+
+# Endpoint raíz (opcional pero recomendado)
+@app.get("/")
+def root():
+    return {
+        "app": "InversionAPP Backend",
+        "status": "running"
+    }
