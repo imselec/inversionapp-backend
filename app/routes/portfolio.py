@@ -31,4 +31,9 @@ def dividends_by_asset():
     from app.services.portfolio_service import dividends_by_asset
     return dividends_by_asset()
 
+@router.get("/yield-history")
+def yield_history():
+    from app.services.portfolio_service import yield_history
+    return yield_history()
+
 
