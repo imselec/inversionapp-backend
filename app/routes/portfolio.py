@@ -28,8 +28,7 @@ def portfolio_time_series():
 
 @router.get("/dividends-by-asset")
 def dividends_by_asset():
-    return {
-        "UPS": 12.4,
-        "ABBV": 18.9,
-        "LMT": 9.1
-    }
+    from app.services.portfolio_service import dividends_by_asset
+    return dividends_by_asset()
+
+
