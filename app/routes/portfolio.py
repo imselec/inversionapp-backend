@@ -20,3 +20,16 @@ def portfolio_snapshot():
         ],
         "total_assets": len(df)
     }
+    
+@router.get("/time-series")
+def portfolio_time_series():
+    from app.services.portfolio_service import load_time_series
+    return load_time_series()
+
+@router.get("/dividends-by-asset")
+def dividends_by_asset():
+    return {
+        "UPS": 12.4,
+        "ABBV": 18.9,
+        "LMT": 9.1
+    }
