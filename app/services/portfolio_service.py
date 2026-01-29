@@ -1,31 +1,18 @@
-import pandas as pd
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-PORTFOLIO_FILE = BASE_DIR / "portfolio.csv"
+# portfolio_service.py
 
 def load_portfolio():
-    return pd.read_csv(PORTFOLIO_FILE)
-
-def load_time_series():
-    # Datos mínimos reales (pueden venir luego de CSV histórico)
     return {
-        "dates": [
-            "2025-11",
-            "2025-12",
-            "2026-01"
-        ],
-        "portfolio_value": [
-            1000,
-            1200,
-            1400
-        ]
+        "UPS": 0.5577,
+        "ABBV": 0.3574,
+        "LMT": 0.1966
     }
 
-@router.get("/dividends-by-asset")
 def dividends_by_asset():
-    from app.services.portfolio_service import dividends_by_asset
-    return dividends_by_asset()
+    return {
+        "UPS": 12.4,
+        "ABBV": 18.9,
+        "LMT": 9.1
+    }
 
 def yield_history():
     return {
@@ -33,3 +20,25 @@ def yield_history():
         "ABBV": {"2023": 4.3, "2024": 4.7},
         "LMT": {"2023": 3.1, "2024": 3.5}
     }
+
+def recommendations():
+    return [
+        {"symbol": "UPS", "action": "buy"},
+        {"symbol": "ABBV", "action": "hold"},
+        {"symbol": "LMT", "action": "buy"}
+    ]
+
+def recommendation_candidates():
+    return ["UPS", "ABBV", "LMT", "JNJ", "XOM", "CVX"]
+
+def alerts():
+    return [
+        {"symbol": "UPS", "alert": "Price above 60"},
+        {"symbol": "LMT", "alert": "Dividend increase"}
+    ]
+
+def history():
+    return [
+        {"date": "2026-01-01", "event": "Bought UPS"},
+        {"date": "2026-01-15", "event": "Bought ABBV"}
+    ]
