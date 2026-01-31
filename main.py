@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from typing import List
 import csv
-import os
 import json
 
 app = FastAPI(title="Dividend Advisor Backend")
@@ -141,3 +140,15 @@ def audit():
 @app.post("/system/run")
 def run_analysis():
     return {"success": True, "message": "Analysis completed"}
+
+import os
+from fastapi import Header, HTTPException
+from app import update_portfolio
+
+@app.post("/update-portfolio")
+def update_portfolio_endpoint(secret_key: str = Header(...)):
+    if secret_key != os.getenv("SECRET_KEY"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    update_portfolio.update_portfolio()
+    return {"status": "Portfolio actualizado ✅"}
+

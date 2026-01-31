@@ -48,3 +48,22 @@ def get_portfolio_endpoint(db: Session = Depends(get_db)):
             "avg_price": asset.avg_price
         })
     return result
+
+import os
+from fastapi import Header, HTTPException
+
+from app import update_portfolio  # el script que creamos
+
+# Endpoint seguro para actualizar portfolio desde CSV
+@app.post("/update-portfolio")
+def update_portfolio_endpoint(secret_key: str = Header(...)):
+    # Validar clave
+    if secret_key != os.getenv("SECRET_KEY"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Ejecutar actualización
+    try:
+        update_portfolio.update_portfolio()
+        return {"status": "Portfolio actualizado ✅"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {e}")
