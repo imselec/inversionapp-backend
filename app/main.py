@@ -1,13 +1,18 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from app import db, models, services
 
-app = FastAPI()
+# Crear tablas si no existen
+models.Base.metadata.create_all(bind=db.engine)
 
-# Configura CORS
+app = FastAPI(title="InversionAPP Backend")
+
+# Configurar CORS para Lovable
 origins = [
-    "https://lovable.ai",        # dominio oficial de Lovable
-    "http://localhost",          # opcional para pruebas locales
-    "http://127.0.0.1"           # opcional para pruebas locales
+    "https://lovable.ai",
+    "http://localhost",
+    "http://127.0.0.1"
 ]
 
 app.add_middleware(
@@ -18,19 +23,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Dependency para DB
+def get_db():
+    session = db.SessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
+
 @app.get("/system/status")
 def status():
     return {"status": "ok"}
 
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-@app.on_event("startup")
-def startup_event():
-    logger.info("Backend started and ready")
-
-@app.on_event("shutdown")
-def shutdown_event():
-    logger.info("Backend shutting down")
+@app.get("/portfolio")
+def get_portfolio_endpoint(db: Session = Depends(get_db)):
+    return services.get_portfolio(db)
