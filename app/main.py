@@ -8,7 +8,7 @@ models.Base.metadata.create_all(bind=db.engine)
 
 app = FastAPI(title="InversionAPP Backend")
 
-# Configurar CORS para Lovable
+# CORS para Lovable
 origins = [
     "https://lovable.ai",
     "http://localhost",
@@ -23,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dependency para DB
+# Dependency DB
 def get_db():
     session = db.SessionLocal()
     try:
@@ -31,10 +31,20 @@ def get_db():
     finally:
         session.close()
 
+# Status
 @app.get("/system/status")
 def status():
     return {"status": "ok"}
 
+# Portfolio desde DB
 @app.get("/portfolio")
 def get_portfolio_endpoint(db: Session = Depends(get_db)):
-    return services.get_portfolio(db)
+    assets = db.query(models.Portfolio).all()
+    result = []
+    for asset in assets:
+        result.append({
+            "symbol": asset.symbol,
+            "quantity": asset.quantity,
+            "avg_price": asset.avg_price
+        })
+    return result
