@@ -1,25 +1,15 @@
+# app/api/portfolio_time_series.py
 from fastapi import APIRouter
-import pandas as pd
-from datetime import datetime
 
 router = APIRouter()
 
-CSV_PATH = "./portfolio.csv"
-
-@router.get("/time-series")
+@router.get("/")
 def portfolio_time_series():
-    # Demo: genera series mensuales a partir de holdings actuales
-    df = pd.read_csv(CSV_PATH)
-    snapshots = []
-    for i in range(6):
-        date = (datetime.now().replace(day=1) - pd.DateOffset(months=i)).strftime("%Y-%m-01")
-        total_invested = (df["shares"] * df["price_per_share"]).sum()
-        est_dividends = (df["shares"] * df["dividend_per_share"]).sum()
-        avg_yield = (est_dividends / total_invested * 100) if total_invested else 0
-        snapshots.append({
-            "date": date,
-            "estimated_annual_dividends": round(est_dividends, 2),
-            "total_invested": round(total_invested, 2),
-            "average_yield": round(avg_yield, 2)
-        })
-    return snapshots[::-1]  # cronológico
+    return [
+        {"date": "2025-09-01", "estimated_annual_dividends": 320, "total_invested": 8000, "average_yield": 4.0},
+        {"date": "2025-10-01", "estimated_annual_dividends": 350, "total_invested": 8200, "average_yield": 4.1},
+        {"date": "2025-11-01", "estimated_annual_dividends": 380, "total_invested": 8400, "average_yield": 4.2},
+        {"date": "2025-12-01", "estimated_annual_dividends": 420, "total_invested": 8800, "average_yield": 4.3},
+        {"date": "2026-01-01", "estimated_annual_dividends": 450, "total_invested": 9200, "average_yield": 4.4},
+        {"date": "2026-02-01", "estimated_annual_dividends": 482, "total_invested": 9600, "average_yield": 4.5},
+    ]

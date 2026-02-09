@@ -1,12 +1,13 @@
+# app/api/system_status.py
 from fastapi import APIRouter
 from datetime import datetime
 
 router = APIRouter()
 
-@router.get("/status")
+@router.get("/")
 def system_status():
     return {
         "status": "READY",
-        "last_run": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "last_run": datetime.utcnow().isoformat(),
         "message": "System operational"
     }
