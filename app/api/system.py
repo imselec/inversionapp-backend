@@ -1,6 +1,7 @@
+# app/api/system.py
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/system", tags=["system"])
+router = APIRouter()  # Sin prefix aquí
 
 @router.get("/status")
 def system_status():
