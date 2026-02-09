@@ -1,4 +1,3 @@
-# app/api/yield_history.py
 from fastapi import APIRouter
 
 router = APIRouter()
