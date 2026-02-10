@@ -1,18 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Import routers
+# Routers
 from app.api.portfolio_snapshot import router as snapshot_router
 from app.api.portfolio_time_series import router as time_series_router
 from app.api.dividends_by_asset import router as dividends_router
 from app.api.yield_history import router as yield_router
 from app.api.recommendations import router as recommendations_router
-from app.api.recommendation_candidates import router as candidates_router  # NUEVO
+from app.api.recommendations_candidates import router as candidates_router
 from app.api.alerts import router as alerts_router
 from app.api.history import router as history_router
 from app.api.system import router as system_router
-from app.api.investments_plan import router as investments_plan_router  # Plan mensual
+from app.api.investments_plan import router as investments_plan_router
 
+# Crear la app
 app = FastAPI(title="InversionAPP Backend")
 
 # Middleware CORS
@@ -23,9 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ──────────────────────────────────────────────
-# Include routers
-# ──────────────────────────────────────────────
+# Incluir routers
 app.include_router(snapshot_router, prefix="/portfolio/snapshot", tags=["Portfolio Snapshot"])
 app.include_router(time_series_router, prefix="/portfolio/time-series", tags=["Portfolio Time Series"])
 app.include_router(dividends_router, prefix="/portfolio/dividends-by-asset", tags=["Dividends by Asset"])
