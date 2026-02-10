@@ -1,31 +1,22 @@
-# app/api/investments_plan.py
 from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List
 from app.services.monthly_plan_engine import build_monthly_plan
+import requests
 
 router = APIRouter()
 
-# ───────────────────────────────
-# Request model para Plan Mensual
-# ───────────────────────────────
-class MonthlyPlanRequest(BaseModel):
-    amount: float = 200
-    strategy: str = "dividend_growth"
+class PlanRequest(BaseModel):
+    amount: float
+    strategy: str
     exclude: List[str] = []
 
-# ───────────────────────────────
-# POST /investments/plan/monthly
-# ───────────────────────────────
-@router.post("/", summary="Genera el plan mensual de inversión")
-def generate_monthly_plan(request: MonthlyPlanRequest):
-    # Usamos la función del servicio
-    plan = build_monthly_plan(request.amount)
+@router.post("/")
+def monthly_plan(body: PlanRequest):
+    # Traer holdings actuales
+    portfolio = requests.get("https://inversionapp-backend.onrender.com/portfolio").json()
+    # Traer recomendaciones
+    recommendations = requests.get("https://inversionapp-backend.onrender.com/recommendations").json()
     
-    # Filtrar tickers excluidos si es necesario
-    if request.exclude:
-        plan["purchases"] = [
-            p for p in plan["purchases"] if p["ticker"] not in request.exclude
-        ]
-    
-    return plan
+    result = build_monthly_plan(body.amount, body.strategy, body.exclude, portfolio, recommendations)
+    return result
