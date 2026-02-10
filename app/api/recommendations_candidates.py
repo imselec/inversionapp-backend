@@ -4,12 +4,24 @@ from fastapi import APIRouter
 router = APIRouter()
 
 @router.get("/")
-def get_recommendation_candidates():
+def recommendation_candidates():
     """
-    Retorna los candidatos a recomendaciones (1 usuario).
+    Lista de tickers candidatos para nuevas inversiones.
     """
     return [
-        {"ticker": "JEPI", "reason": "High monthly income via covered calls", "sector": "Multi-Asset"},
-        {"ticker": "VIG", "reason": "Dividend growth ETF", "sector": "Dividend Growth"},
-        {"ticker": "VYM", "reason": "High yield broad exposure", "sector": "High Yield"},
+        {
+            "ticker": "JEPI",
+            "reason": "High monthly income via covered calls",
+            "sector": "Multi-Asset"
+        },
+        {
+            "ticker": "VYM",
+            "reason": "Broad high-yield exposure",
+            "sector": "ETF"
+        },
+        {
+            "ticker": "PG",
+            "reason": "Stable consumer goods dividend",
+            "sector": "Consumer"
+        },
     ]
