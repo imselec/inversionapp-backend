@@ -17,8 +17,6 @@ from app.api.investments_plan import router as investments_plan_router
 from app.api.recommendations_candidates import router as candidates_router
 from app.api.portfolio_actual import router as portfolio_router
 
-
-
 app = FastAPI(title="InversionAPP Backend")
 
 app.add_middleware(
@@ -39,8 +37,7 @@ app.include_router(history_router, prefix="/history", tags=["History"])
 app.include_router(system_router, prefix="/system", tags=["System"])
 
 # Include new routers
-
 app.include_router(investments_plan_router, prefix="/investments/plan", tags=["Investments Plan"])
-app.include_router(candidates_router, prefix="/recommendations/candidates", tags=["Recommendation Candidates"])
+app.include_router(candidates_router, prefix="/recommendations", tags=["Recommendation Candidates"])
 app.include_router(portfolio_router, prefix="/portfolio", tags=["Portfolio Actual"])
 
