@@ -1,3 +1,11 @@
 {
-    "monthly_budget": 200
+  "monthly_investment": 300,
+  "benchmark": {
+    "Technology": 25.0,
+    "Healthcare": 15.0,
+    "Financials": 14.0,
+    "Consumer Defensive": 8.0,
+    "Energy": 5.0,
+    "REIT": 3.0
+  }
 }

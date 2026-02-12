@@ -1,15 +1,18 @@
-# app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# Routers
 from app.api.recommendations import router as recommendations_router
+from app.api.config import router as config_router
 
 app = FastAPI(
     title="InversionAPP Backend",
-    version="2.0.0"
+    version="3.0.0"
 )
 
-# CORS abierto para Lovable / Render
+# ==============================
+# CORS (Lovable / Render ready)
+# ==============================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,17 +21,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ==============================
 # Routers
+# ==============================
 app.include_router(
     recommendations_router,
     prefix="/recommendations",
     tags=["recommendations"]
 )
 
+app.include_router(
+    config_router,
+    prefix="/config",
+    tags=["config"]
+)
+
+# ==============================
+# Health Endpoints
+# ==============================
 @app.get("/")
 def root():
-    return {"status": "ok", "service": "InversionAPP Backend"}
+    return {
+        "status": "ok",
+        "service": "InversionAPP Backend",
+        "version": "3.0.0"
+    }
+
 
 @app.get("/system/status")
 def system_status():
-    return {"status": "running"}
+    return {
+        "status": "running"
+    }
