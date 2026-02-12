@@ -1,31 +1,52 @@
+# app/services/scoring_service.py
+
 from typing import List, Dict
-from app.core.history_loader import load_price_history, load_dividends
-from app.core.portfolio_loader import load_portfolio
-from app.core.config import PLAN_MENSUAL_USD, RESTRICTED_ES, REPLACEMENTS_ES
 
-def dynamic_score(asset: Dict, price_history: Dict[str, List[float]], dividends: Dict[str, float]) -> float:
-    ticker = asset["ticker"]
-    
-    # Dividend yield dinámico (total últimos 12 meses / precio actual)
-    dividend = dividends.get(ticker, 0)
-    avg_price = asset.get("avg_price", 1)
-    dy_score = min(dividend / avg_price, 1.0)
+# Universo permitido (sin SCHD por restricciones en España)
+INVESTMENT_UNIVERSE = [
+    {"ticker": "AVGO", "sector": "Technology", "score": 92},
+    {"ticker": "MSFT", "sector": "Technology", "score": 90},
+    {"ticker": "JNJ", "sector": "Healthcare", "score": 88},
+    {"ticker": "PG", "sector": "Consumer Defensive", "score": 85},
+    {"ticker": "XOM", "sector": "Energy", "score": 82},
+    {"ticker": "CVX", "sector": "Energy", "score": 80},
+    {"ticker": "JPM", "sector": "Financials", "score": 87},
+    {"ticker": "BLK", "sector": "Financials", "score": 84},
+    {"ticker": "O", "sector": "REIT", "score": 78},
+]
 
-    # Trend de precio (últimos 5 días)
-    prices = price_history.get(ticker, [])
-    trend_score = 0.5
-    if len(prices) >= 5:
-        trend = (prices[-1] - prices[-5]) / prices[-5]  # subida o bajada %
-        # Bajada => más atractivo (compra)
-        trend_score = max(min(0.5 - trend, 1.0), 0.0)
+def get_ranked_candidates() -> List[Dict]:
+    """
+    Devuelve los activos ordenados por score descendente.
+    No ejecuta nada externo.
+    """
+    return sorted(INVESTMENT_UNIVERSE, key=lambda x: x["score"], reverse=True)
 
-    # Sector fijo (opcional, se puede incluir)
-    sector_score = 0.5  # si quieres, se puede ponderar igual que antes
 
-    # Score final ponderado
-    score = 0.6 * dy_score + 0.4 * trend_score
-    return score
+def get_top_recommendations(monthly_amount: float = 200) -> Dict:
+    """
+    Genera una recomendación simple asignando el capital mensual
+    al activo con mayor score.
+    """
 
-def calculate_monthly_allocation_dynamic(country="ES") -> list[dict]:
-    # tu código de scoring dinámico, reemplazos y buy_signal
-    ...
+    ranked = get_ranked_candidates()
+
+    if not ranked:
+        return {
+            "monthly_investment": monthly_amount,
+            "recommendations": []
+        }
+
+    top_asset = ranked[0]
+
+    return {
+        "monthly_investment": monthly_amount,
+        "recommendations": [
+            {
+                "ticker": top_asset["ticker"],
+                "sector": top_asset["sector"],
+                "score": top_asset["score"],
+                "allocated_amount": monthly_amount
+            }
+        ]
+    }
